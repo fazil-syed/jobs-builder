@@ -8,6 +8,8 @@ COPY pyproject.toml poetry.lock ./
 
 RUN poetry install --no-root --no-interaction
 
+RUN poetry run playwright install-deps chromium
+
 RUN poetry run playwright install chromium
 
 COPY . .
