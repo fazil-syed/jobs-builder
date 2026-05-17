@@ -8,5 +8,4 @@ if __name__ == "__main__":
     urls = generate_greenhouse_urls()
     jobs = get_jobs_from_greenhouse(urls=urls)
     
-    with open(f"processed_{settings.LINKS_FILE}","w") as f:
-        json.dump(jobs.model_dump(mode="json"),f,indent=4)
+  
