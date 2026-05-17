@@ -1,4 +1,5 @@
 from datetime import datetime
+from enum import Enum
 from typing import List, Optional
 
 from pydantic import BaseModel
@@ -14,3 +15,9 @@ class Job(BaseModel):
     
 class JobsList(BaseModel):
     jobs : List[Job]
+    
+    
+class CountryEnum(str,Enum):
+    INDIA = "India"
+    
+    

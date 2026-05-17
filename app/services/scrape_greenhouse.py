@@ -6,7 +6,7 @@ import requests
 from app.schemas.jobs import Job, JobsList
 
 
-def get_jobs_from_greenhouse(urls: List[str]) -> JobsList:
+def get_jobs_from_greenhouse(urls: List[str]) -> List[Job]:
     jobs = []
     for url in urls:
         response = requests.get(url)
@@ -27,6 +27,4 @@ def get_jobs_from_greenhouse(urls: List[str]) -> JobsList:
             print(err)
             print(url)
             continue
-    return JobsList(
-        jobs=jobs
-    )
+    return jobs
