@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{{ title }}</title>
+</head>
+
+<body style="margin:0;padding:0;background-color:#f4f4f4;font-family:Arial,sans-serif;">
+
+  <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#f4f4f4;">
+    <tr>
+      <td align="center" style="padding:24px 0;">
+
+        <!-- Wrapper -->
+        <table width="600" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;width:100%;">
+
+          <!-- Header -->
+          <tr>
+            <td bgcolor="#111827" style="background-color:#111827;padding:28px 32px;border-radius:8px 8px 0 0;">
+              <p
+                style="margin:0;font-size:11px;font-family:Arial,sans-serif;color:#9ca3af;letter-spacing:2px;text-transform:uppercase;">
+                Weekly Digest</p>
+              <h1 style="margin:8px 0 0 0;font-size:22px;font-family:Arial,sans-serif;color:#ffffff;font-weight:700;">🔥
+                Top Engineering Jobs</h1>
+              <p style="margin:8px 0 0 0;font-size:13px;font-family:Arial,sans-serif;color:#9ca3af;">{{ jobs|length }}
+                curated roles this week</p>
+            </td>
+          </tr>
+
+          <!-- Body -->
+          <tr>
+            <td bgcolor="#ffffff" style="background-color:#ffffff;padding:24px 32px;">
+
+              {% for job in jobs %}
+
+              <!-- Job Card -->
+              <table width="100%" cellpadding="0" cellspacing="0" border="0"
+                style="margin-bottom:16px;border:1px solid #e5e7eb;border-radius:8px;overflow:hidden;">
+                <tr>
+                  <td style="padding:20px 24px;">
+
+                    <!-- Company + Location row -->
+                    <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                      <tr>
+                        <td>
+                          <p
+                            style="margin:0;font-size:11px;font-family:Arial,sans-serif;color:#6b7280;text-transform:uppercase;letter-spacing:1px;">
+                            {{ job.company_name }}</p>
+                        </td>
+                        <td align="right">
+                          <p style="margin:0;font-size:11px;font-family:Arial,sans-serif;color:#6b7280;">{{ job.location
+                            }}</p>
+                        </td>
+                      </tr>
+                    </table>
+
+                    <!-- Job Title -->
+                    <p
+                      style="margin:8px 0 0 0;font-size:16px;font-family:Arial,sans-serif;font-weight:700;color:#111827;">
+                      {{ job.title }}</p>
+
+                    <!-- Meta row: experience + date -->
+                    <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-top:12px;">
+                      <tr>
+                        <td>
+                          {% if job.experience_required %}
+                          <span
+                            style="display:inline-block;background-color:#eff6ff;color:#1d4ed8;font-size:11px;font-family:Arial,sans-serif;padding:3px 10px;border-radius:4px;">{{
+                            job.experience_required }}</span>
+                          {% endif %}
+                          {% if job.compensation %}
+                          <span
+                            style="display:inline-block;background-color:#f0fdf4;color:#16a34a;font-size:11px;font-family:Arial,sans-serif;padding:3px 10px;border-radius:4px;margin-left:6px;">{{
+                            job.compensation }}</span>
+                          {% endif %}
+                        </td>
+                        <td align="right">
+                          {% if job.published_date %}
+                          <p style="margin:0;font-size:11px;font-family:Arial,sans-serif;color:#9ca3af;">{{
+                            job.published_date.strftime('%b %d, %Y') }}</p>
+                          {% endif %}
+                        </td>
+                      </tr>
+                    </table>
+
+                    <!-- Apply Button -->
+                    <table cellpadding="0" cellspacing="0" border="0" style="margin-top:16px;">
+                      <tr>
+                        <td bgcolor="#111827" style="background-color:#111827;border-radius:6px;">
+                          <a href="{{ job.apply_link }}" target="_blank"
+                            style="display:inline-block;padding:10px 20px;font-size:13px;font-family:Arial,sans-serif;font-weight:700;color:#ffffff;text-decoration:none;">Apply
+                            Now →</a>
+                        </td>
+                      </tr>
+                    </table>
+
+                  </td>
+                </tr>
+              </table>
+
+              {% endfor %}
+
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td bgcolor="#f9fafb"
+              style="background-color:#f9fafb;padding:20px 32px;border-top:1px solid #e5e7eb;border-radius:0 0 8px 8px;">
+              <p style="margin:0;font-size:11px;font-family:Arial,sans-serif;color:#9ca3af;text-align:center;">
+                You're receiving this because you subscribed to the jobs newsletter.<br />
+                <a href="UNSUBSCRIBE_PLACEHOLDER" style="color:#6b7280;text-decoration:underline;">Unsubscribe</a>
+              </p>
+            </td>
+          </tr>
+
+        </table>
+        <!-- End Wrapper -->
+
+      </td>
+    </tr>
+  </table>
+
+</body>
+
+</html>
