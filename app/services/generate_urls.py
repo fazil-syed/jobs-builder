@@ -1,10 +1,8 @@
-import json
 import re
 from typing import List
 from app.config.config import settings
 
 from ddgs import DDGS
-
 
 
 def generate_api_urls(
@@ -29,14 +27,15 @@ def generate_api_urls(
 
     return list(urls)
 
+
 def generate_greenhouse_urls() -> List[str]:
     return generate_api_urls(
         query=settings.GREENHOUSE_SEARCH_QUERY,
         regex_pattern=r"boards\.greenhouse\.io/([^/]+)",
         url_template=settings.GREENHOUSE_URL_TEMPLATE,
     )
-    
-    
+
+
 def generate_lever_urls() -> List[str]:
     return generate_api_urls(
         query=settings.LEVER_SEARCH_QUERY,

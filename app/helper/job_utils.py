@@ -1,7 +1,20 @@
 import re
 
 
+COUNTRY_TO_LOCATIONS = {
+    "India": [
+        "Pune",
+        "Bengaluru",
+        "Bangalore",
+        "Gurugram",
+        "Mumbai",
+        "Delhi"
+    ]
+}
+
 def extract_experience(text: str) -> str | None:
+    if not text:
+        return None
     pattern = r'(\d+)\+?\s*years?'
 
     matches = re.findall(pattern, text, re.IGNORECASE)
