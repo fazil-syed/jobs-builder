@@ -66,3 +66,5 @@ if __name__ == "__main__":
     payload = {"title": title, "content": newsletter_html}
     headers = {"x-api-key": settings.JOBS_AUTH_KEY}
     response = requests.post(url=url, json=payload, headers=headers)
+
+    print(response.text)

@@ -1,4 +1,4 @@
-FROM python:3.12-slim
+FROM mcr.microsoft.com/playwright/python:v1.59.0-noble
 
 WORKDIR /app
 
@@ -8,9 +8,6 @@ COPY pyproject.toml poetry.lock ./
 
 RUN poetry install --no-root --no-interaction
 
-RUN poetry run playwright install-deps chromium
-
-RUN poetry run playwright install chromium
 
 COPY . .
 
