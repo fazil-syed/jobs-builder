@@ -58,7 +58,10 @@ if __name__ == "__main__":
     # post email
 
     url = settings.POST_URL
-    title = "Engineering Jobs - 10-17 May 2026"
+    today = datetime.today()
+    title = (
+        f"Engineering Jobs - {start_date.strftime('%d')} - {today.strftime('%d %b %Y')}"
+    )
 
     payload = {"title": title, "content": newsletter_html}
     headers = {"x-api-key": settings.JOBS_AUTH_KEY}
