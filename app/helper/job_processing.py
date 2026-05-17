@@ -1,6 +1,10 @@
 from datetime import date
 from typing import List
 
+from playwright.sync_api import sync_playwright
+from trafilatura import extract
+
+from app.helper.job_utils import extract_experience
 from app.schemas.jobs import CountryEnum, Job
 
 
@@ -25,6 +29,11 @@ def process_jobs(jobs_list : List[Job],start_date: date,end_date :date = None,lo
          
         if (job.published_date and job.published_date.date() < start_date) and (job.updated_date and job.updated_date.date() < start_date):
             continue
+        if job.job_link:
+            html = get_page_content(url=job.job_link)
+            extracted_content = extract(filecontent=html,output_format="markdown")
+            experience_required = extract_experience(extracted_content)
+            job.experience_required = experience_required
         
         processed_jobs.append(job)
             
@@ -41,3 +50,22 @@ COUNTRY_TO_LOCATIONS = {
         "Delhi"
     ]
 }
+
+def get_page_content(url:str)->str:
+    with sync_playwright() as p:
+        browser = p.chromium.launch(headless=True)
+        
+        page = browser.new_page(
+            user_agent=(
+                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+                "AppleWebKit/537.36 (KHTML, like Gecko) "
+                "Chrome/122.0.0.0 Safari/537.36"
+            )
+        )
+        
+        page.goto(url=url,wait_until="networkidle")
+        
+        html = page.content()
+        
+        browser.close()
+        return html

@@ -7,7 +7,10 @@ class Settings(BaseSettings):
                         extra="allow"
                     )
         
-    SEARCH_QUERY : str
+    GREENHOUSE_SEARCH_QUERY : str
+    GREENHOUSE_URL_TEMPLATE : str
     
+    LEVER_SEARCH_QUERY : str
+    LEVER_URL_TEMPLATE : str    
 
 settings = Settings()
