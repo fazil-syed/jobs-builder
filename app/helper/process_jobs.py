@@ -8,16 +8,10 @@ def process_jobs(jobs_list : List[Job],start_date: date,end_date :date = None,lo
     processed_jobs = []
     locations = []
     if location_country:
-        locations = COUNTRY_TO_LOCATIONS[location_country.value]
-        locations.append(location_country.value)
+        locations = COUNTRY_TO_LOCATIONS[location_country]
+        locations.append(location_country)
     
-    for job in jobs_list:
-        # if locations:
-        #     print("matching")
-        #     match = any(location not in job.location for location in locations)
-        #     if not match:
-        #         print(job.location)
-            
+    for job in jobs_list:            
         if locations and job.location:
             if not any(location in job.location for location in locations):
                 if remote and "Remote" not in job.location:

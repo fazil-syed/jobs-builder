@@ -2,7 +2,8 @@
 *.env.stage
 *.env.prod
 
-*/__pycache__/*
+**/__pycache__/
+__pycache__/
 
 *.json
 scrape.py

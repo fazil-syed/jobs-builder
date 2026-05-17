@@ -24,7 +24,6 @@ def get_jobs_from_greenhouse(urls: List[str]) -> List[Job]:
                         location=job.get("location",{}).get("name")
                     ))                    
         except Exception as err:
-            print(err)
-            print(url)
+            print(f"error {err} for url - {url}")
             continue
     return jobs
