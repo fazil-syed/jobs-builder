@@ -1,0 +1,8 @@
+*.env
+*.env.stage
+*.env.prod
+
+*.__pycache__
+
+*.json
+scrape.py
