@@ -53,9 +53,7 @@ def process_jobs(
                 if job.updated_date and job.updated_date.date() > end_date:
                     continue
 
-            if (job.published_date and job.published_date.date() < start_date) and (
-                job.updated_date and job.updated_date.date() < start_date
-            ):
+            if job.published_date and job.published_date.date() < start_date:
                 continue
             if job.job_link:
                 html = get_page_content(page=page, url=job.job_link)
