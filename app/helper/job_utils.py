@@ -1,7 +1,6 @@
 import re
 from typing import Optional
 
-
 COUNTRY_TO_LOCATIONS = {
     "India": ["Pune", "Bengaluru", "Bangalore", "Gurugram", "Mumbai", "Delhi"]
 }

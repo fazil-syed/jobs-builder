@@ -11,7 +11,7 @@ from app.schemas.jobs import CountryEnum, Job
 def process_jobs(
     jobs_list: List[Job],
     start_date: date,
-    end_date: date = None,
+    people_at_company_map: dict,
     location_country: CountryEnum = None,
     remote_allowed: bool = True,
     experience_only: bool = False,
@@ -43,33 +43,35 @@ def process_jobs(
             ),
         )
         for job in jobs_list:
-            if locations and job.location:
-                if not any(location in job.location for location in locations):
-                    if remote_allowed and "Remote" not in job.location:
-                        continue
-            if end_date:
-                if job.published_date and job.published_date.date() > end_date:
-                    continue
-                if job.updated_date and job.updated_date.date() > end_date:
-                    continue
+            location_matches = any(location in job.location for location in locations)
+            is_remote = "remote" in job.location.lower()
+            if not location_matches and not (remote_allowed and is_remote):
+                continue
 
             if job.published_date and job.published_date.date() < start_date:
                 continue
             if job.job_link:
-                html = get_page_content(page=page, url=job.job_link)
-                extracted_content = extract(filecontent=html, output_format="markdown")
-                experience_required, experience_years = extract_experience(
-                    extracted_content
-                )
-                job.experience_required = experience_required
+                try:
+                    html = get_page_content(page=page, url=job.job_link)
+                    extracted_content = extract(
+                        filecontent=html, output_format="markdown"
+                    )
+                    experience_required, experience_years = extract_experience(
+                        extracted_content
+                    )
+                    job.experience_required = experience_required
 
-                if (
-                    experience_years and max_experience
-                ) and experience_years > max_experience:
-                    continue
+                    if (
+                        experience_years and max_experience
+                    ) and experience_years > max_experience:
+                        continue
 
-                if experience_only and not experience_years:
-                    continue
+                    if experience_only and not experience_years:
+                        continue
+                except Exception as e:
+                    print(e)
+            if people_at_company_map[job.company_name]:
+                job.people_to_reach_out = people_at_company_map[job.company_name]
 
             processed_jobs.append(job)
 

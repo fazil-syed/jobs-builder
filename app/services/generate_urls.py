@@ -1,8 +1,9 @@
 import re
 from typing import List
-from app.config.config import settings
 
 from ddgs import DDGS
+
+from app.config.config import settings
 
 
 def generate_api_urls(
@@ -12,7 +13,7 @@ def generate_api_urls(
     max_results: int = 100,
 ) -> List[str]:
     ddgs = DDGS()
-    results = ddgs.text(query=query, max_results=max_results)
+    results = ddgs.text(query=query, region="in-en", max_results=max_results)
 
     urls = set()
 
@@ -41,4 +42,20 @@ def generate_lever_urls() -> List[str]:
         query=settings.LEVER_SEARCH_QUERY,
         regex_pattern=r"jobs\.lever\.co/([^/]+)",
         url_template=settings.LEVER_URL_TEMPLATE,
+    )
+
+
+# def generate_ashbyhq_urls() -> List[str]:
+#     return generate_api_urls(
+#         query='site:jobs.ashbyhq.com "Software Engineer" india',
+#         regex_pattern=r"jobs\.ashbyq\.com/([^/]+)",
+#         url_template="",
+#     )
+
+
+def generate_workable_urls() -> List[str]:
+    return generate_api_urls(
+        query='site:apply.workable.com "Software Engineer" india',
+        regex_pattern=r"apply\.workable\.com/([^/]+)",
+        url_template="https://apply.workable.com/api/v3/accounts/{company_code}/jobs",
     )
