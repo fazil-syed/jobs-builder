@@ -1,8 +1,9 @@
 from datetime import date, datetime, timedelta
 
-from ddgs import DDGS
+import requests
 from jinja2 import Environment, FileSystemLoader
 
+from app.config.config import settings
 from app.helper.job_processing import process_jobs
 from app.helper.profile_processing import fetch_people_by_priority
 from app.schemas.jobs import CountryEnum
@@ -28,7 +29,7 @@ def render_newsletter(jobs: list) -> str:
 
 
 if __name__ == "__main__":
-    start_date: date = (datetime.now() - timedelta(days=7)).date()
+    start_date: date = (datetime.now() - timedelta(days=10)).date()
     greenhouse_urls = generate_greenhouse_urls()
 
     jobs = get_jobs_from_greenhouse(urls=greenhouse_urls)
@@ -54,21 +55,18 @@ if __name__ == "__main__":
         remote_allowed=False,
         people_at_company_map=people_at_company_map,
     )
-    print(processed_jobs)
     newsletter_html = render_newsletter(jobs=processed_jobs)
-    with open("letter.html", "w") as f:
-        print(newsletter_html, file=f, flush=True)
 
     # post email
 
-    # url = settings.POST_URL
-    # today = datetime.today()
-    # title = (
-    #     f"Engineering Jobs - {start_date.strftime('%d')} - {today.strftime('%d %b %Y')}"
-    # )
+    url = settings.POST_URL
+    today = datetime.today()
+    title = (
+        f"Engineering Jobs - {start_date.strftime('%d')} - {today.strftime('%d %b %Y')}"
+    )
 
-    # payload = {"title": title, "content": newsletter_html}
-    # headers = {"x-api-key": settings.JOBS_AUTH_KEY}
-    # response = requests.post(url=url, json=payload, headers=headers)
+    payload = {"title": title, "content": newsletter_html}
+    headers = {"x-api-key": settings.JOBS_AUTH_KEY}
+    response = requests.post(url=url, json=payload, headers=headers)
 
-    # print(response.text)
+    print(response.text)

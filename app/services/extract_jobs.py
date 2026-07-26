@@ -6,17 +6,31 @@ import requests
 
 from app.schemas.jobs import Job
 
-# JOB_TITLES = ["Software", "Engineering", "Architect", "Developer"]
-JOB_TITLES = ["Software", "Developer", "Engineer"]
+TITLE_KEYWORDS = [
+    "software",
+    "engineer",
+    "engineering",
+    "developer",
+    "backend",
+    "back-end",
+    "frontend",
+    "front-end",
+    "full stack",
+    "full-stack",
+    "platform",
+    "devops",
+    "sre",
+    "automation engineer",
+]
 EXCLUDE_KEYWORDS = [
-    "Manager",
-    "Principle",
-    "Principal",
-    "Lead",
-    "Staff",
-    "Civil",
-    "Mechanical",
-    "Architect",
+    "manager",
+    "principle",
+    "principal",
+    "lead",
+    "staff",
+    "civil",
+    "mechanical",
+    "architect",
 ]
 
 EXCLUDED_COMPANIES = ["jobgether"]
@@ -33,9 +47,21 @@ def fetch_json(url: str, method: str):
 
 def is_relevant_job(title: str) -> bool:
     title_lower = title.lower()
-    has_job_title = any(item.lower() in title_lower for item in JOB_TITLES)
-    has_excluded = any(item.lower() in title_lower for item in EXCLUDE_KEYWORDS)
+    has_job_title = any(item in title_lower for item in TITLE_KEYWORDS)
+    has_excluded = any(item in title_lower for item in EXCLUDE_KEYWORDS)
     return has_job_title and not has_excluded
+
+
+def build_workable_location(job: dict) -> str:
+    location_data = job.get("location") or {}
+    city = location_data.get("city")
+    country = location_data.get("country")
+    base_location = city or country or ""
+
+    if job.get("remote"):
+        return f"{base_location} Remote".strip() if base_location else "Remote"
+
+    return base_location
 
 
 def extract_lever_company_name(hosted_url: str) -> str:
@@ -127,31 +153,38 @@ def extract_lever_jobs(data, **kwargs) -> List[Job]:
 def extract_workable_jobs(data, **kwargs) -> List[Job]:
 
     jobs = []
+    company_name = extract_workable_company_name(url=kwargs.get("url", ""))
+
+    if any(item.lower() in company_name.lower() for item in EXCLUDED_COMPANIES):
+        return jobs
 
     for job in data.get("results", []):
-        title = job.get("title", "")
+        try:
+            title = job.get("title", "")
 
-        if not is_relevant_job(title):
-            continue
+            if not is_relevant_job(title):
+                continue
 
-        job_code = job.get("shortcode")
-        company_name = extract_workable_company_name(url=kwargs.get("url", ""))
-        if any(item.lower() in company_name.lower() for item in EXCLUDED_COMPANIES):
-            continue
+            job_code = job.get("shortcode")
+            job_link = f"https://apply.workable.com/{company_name}/j/{job_code}"
+            location = build_workable_location(job=job)
 
-        job_link = f"https://apply.workable.com/{company_name}/j/{job_code}"
-        jobs.append(
-            Job(
-                apply_link=job_link,
-                job_link=job_link,
-                company_name=company_name,
-                published_date=job.get("published"),
-                title=title,
-                location=job.get("location", {}).get("city") + "Remote"
-                if job.get("remote")
-                else "",
+            jobs.append(
+                Job(
+                    apply_link=job_link,
+                    job_link=job_link,
+                    company_name=company_name,
+                    published_date=job.get("published"),
+                    title=title,
+                    location=location,
+                )
             )
-        )
+        except Exception as err:
+            print(
+                "error parsing workable job "
+                f"for url - {kwargs.get('url', '')}, "
+                f"title - {job.get('title', '')}, error - {err}"
+            )
 
     return jobs
 

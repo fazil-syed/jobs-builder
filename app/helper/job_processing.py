@@ -43,8 +43,9 @@ def process_jobs(
             ),
         )
         for job in jobs_list:
-            location_matches = any(location in job.location for location in locations)
-            is_remote = "remote" in job.location.lower()
+            job_location = (job.location or "").strip()
+            location_matches = any(location in job_location for location in locations)
+            is_remote = "remote" in job_location.lower()
             if not location_matches and not (remote_allowed and is_remote):
                 continue
 
