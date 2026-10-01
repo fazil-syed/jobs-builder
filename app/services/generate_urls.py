@@ -45,14 +45,6 @@ def generate_lever_urls() -> List[str]:
     )
 
 
-# def generate_ashbyhq_urls() -> List[str]:
-#     return generate_api_urls(
-#         query='site:jobs.ashbyhq.com "Software Engineer" india',
-#         regex_pattern=r"jobs\.ashbyq\.com/([^/]+)",
-#         url_template="",
-#     )
-
-
 def generate_workable_urls() -> List[str]:
     return generate_api_urls(
         query='site:apply.workable.com "Software Engineer" india',
