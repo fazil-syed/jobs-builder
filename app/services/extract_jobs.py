@@ -102,6 +102,9 @@ def extract_greenhouse_jobs(data, **kwargs) -> List[Job]:
 
         company_name = job.get("company_name")
 
+        if not company_name:
+            continue
+
         if any(item.lower() in company_name.lower() for item in EXCLUDED_COMPANIES):
             continue
         print(
