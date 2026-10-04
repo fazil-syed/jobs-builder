@@ -44,7 +44,12 @@ def process_jobs(
         )
         for job in jobs_list:
             job_location = (job.location or "").strip()
-            location_matches = any(location in job_location for location in locations)
+            # Compare case-insensitively: sources are inconsistent about casing
+            # (SmartRecruiters returns "BENGALURU, Karnataka, India"), and a
+            # case-sensitive match silently drops those jobs.
+            location_matches = any(
+                location.lower() in job_location.lower() for location in locations
+            )
             is_remote = "remote" in job_location.lower()
             if not location_matches and not (remote_allowed and is_remote):
                 continue
@@ -71,7 +76,7 @@ def process_jobs(
                         continue
                 except Exception as e:
                     print(e)
-            if people_at_company_map[job.company_name]:
+            if people_at_company_map.get(job.company_name):
                 job.people_to_reach_out = people_at_company_map[job.company_name]
 
             processed_jobs.append(job)
