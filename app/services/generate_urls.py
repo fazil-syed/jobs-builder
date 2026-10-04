@@ -1,32 +1,22 @@
-import re
 from typing import List
 
-from ddgs import DDGS
-
 from app.config.config import settings
+from app.services.search_paginator import paginate
 
 
 def generate_api_urls(
     query: str,
     regex_pattern: str,
     url_template: str,
-    max_results: int = 100,
 ) -> List[str]:
-    ddgs = DDGS()
-    results = ddgs.text(query=query, region="in-en", max_results=max_results)
+    """Discover API URLs by paginating search results and templating the hits."""
+    slugs = paginate(
+        query=query,
+        regex_pattern=regex_pattern,
+        on_progress=lambda page, new: print(f"  {query[:52]} page={page} new={new}"),
+    )
 
-    urls = set()
-
-    for result in results:
-        link = result.get("href", "")
-
-        match = re.search(regex_pattern, link)
-
-        if match:
-            company_code = match.group(1)
-            urls.add(url_template.format(company_code=company_code))
-
-    return list(urls)
+    return list(dict.fromkeys(url_template.format(company_code=slug) for slug in slugs))
 
 
 def generate_greenhouse_urls() -> List[str]:
@@ -47,7 +37,34 @@ def generate_lever_urls() -> List[str]:
 
 def generate_workable_urls() -> List[str]:
     return generate_api_urls(
-        query='site:apply.workable.com "Software Engineer" india',
+        query=settings.WORKABLE_SEARCH_QUERY,
         regex_pattern=r"apply\.workable\.com/([^/]+)",
-        url_template="https://apply.workable.com/api/v3/accounts/{company_code}/jobs",
+        url_template=settings.WORKABLE_URL_TEMPLATE,
+    )
+
+
+def generate_ashby_urls() -> List[str]:
+    """Discover Ashby job boards via search.
+
+    The company code is the slug on jobs.ashbyhq.com. Slugs are case-sensitive
+    and may legitimately contain dots (e.g. "jimdo.com"), so the value is used
+    verbatim -- do not normalise case or strip the extension.
+    """
+    return generate_api_urls(
+        query=settings.ASHBY_SEARCH_QUERY,
+        regex_pattern=r"jobs\.ashbyhq\.com/([^/?#]+)",
+        url_template=settings.ASHBY_URL_TEMPLATE,
+    )
+
+
+def generate_smartrecruiters_urls() -> List[str]:
+    """Discover SmartRecruiters boards via search.
+
+    The trailing slash in the pattern is required -- without it the regex
+    would swallow the posting id and build a malformed company identifier.
+    """
+    return generate_api_urls(
+        query=settings.SMARTRECRUITERS_SEARCH_QUERY,
+        regex_pattern=r"jobs\.smartrecruiters\.com/([^/?#]+)/",
+        url_template=settings.SMARTRECRUITERS_URL_TEMPLATE,
     )

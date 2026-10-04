@@ -7,16 +7,7 @@ from app.config.config import settings
 from app.helper.job_processing import process_jobs
 from app.helper.profile_processing import fetch_people_by_priority
 from app.schemas.jobs import CountryEnum
-from app.services.extract_jobs import (
-    get_jobs_from_greenhouse,
-    get_jobs_from_lever,
-    get_jobs_from_workable,
-)
-from app.services.generate_urls import (
-    generate_greenhouse_urls,
-    generate_lever_urls,
-    generate_workable_urls,
-)
+from app.services.sources import get_all_jobs
 
 
 def render_newsletter(jobs: list) -> str:
@@ -30,16 +21,8 @@ def render_newsletter(jobs: list) -> str:
 
 if __name__ == "__main__":
     start_date: date = (datetime.now() - timedelta(days=10)).date()
-    greenhouse_urls = generate_greenhouse_urls()
 
-    jobs = get_jobs_from_greenhouse(urls=greenhouse_urls)
-
-    lever_urls = generate_lever_urls()
-    workable_urls = generate_workable_urls()
-
-    jobs.extend(get_jobs_from_workable(urls=workable_urls))
-
-    jobs.extend(get_jobs_from_lever(lever_urls))
+    jobs = get_all_jobs()
 
     unique_company_names = {job.company_name for job in jobs}
     people_at_company_map = {}
@@ -58,6 +41,9 @@ if __name__ == "__main__":
     newsletter_html = render_newsletter(jobs=processed_jobs)
 
     # post email
+
+    with open("letter.html", "w") as f:
+        f.write(newsletter_html)
 
     url = settings.POST_URL
     today = datetime.today()
