@@ -42,8 +42,8 @@ if __name__ == "__main__":
 
     # post email
 
-    with open("letter.html", "w") as f:
-        f.write(newsletter_html)
+    # with open("letter.html", "w") as f:
+    #     f.write(newsletter_html)
 
     url = settings.POST_URL
     today = datetime.today()

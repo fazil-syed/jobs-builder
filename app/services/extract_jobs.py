@@ -10,18 +10,20 @@ from app.schemas.jobs import Job
 
 TITLE_KEYWORDS = [
     "software",
-    "engineer",
-    "engineering",
     "developer",
     "backend",
     "back-end",
     "frontend",
+    "site reliability",
     "front-end",
     "full stack",
     "full-stack",
     "platform",
     "devops",
     "sre",
+    "python",
+    "java",
+    "rust",
     "automation engineer",
 ]
 EXCLUDE_KEYWORDS = [
@@ -33,6 +35,8 @@ EXCLUDE_KEYWORDS = [
     "civil",
     "mechanical",
     "architect",
+    "electrical",
+    "environmental",
 ]
 
 EXCLUDED_COMPANIES = ["jobgether"]

@@ -76,7 +76,7 @@ def process_jobs(
                         continue
                 except Exception as e:
                     print(e)
-            if people_at_company_map[job.company_name]:
+            if people_at_company_map.get(job.company_name):
                 job.people_to_reach_out = people_at_company_map[job.company_name]
 
             processed_jobs.append(job)
